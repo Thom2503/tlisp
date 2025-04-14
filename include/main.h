@@ -2,6 +2,7 @@
 #define MAIN_H
 
 #include <stdlib.h>
+#include <stdint.h>
 
 #define bool int
 #define true 1
