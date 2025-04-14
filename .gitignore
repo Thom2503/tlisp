@@ -1,0 +1,48 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# macOS folder attributes
+.Spotlight-V100
+.Trashes
+.fseventsd
+.VolumeIcon.icns
+
+# Compiled source files
+*.o
+*.out
+*.obj
+*.lo
+*.a
+*.so
+*.dylib
+*.dll
+
+# Executables
+*.exe
+*.out
+*.app
+bin/tlisp
+
+# CMake / Make
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+# Backup / temp files
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Build directory
+bin/
+build/
