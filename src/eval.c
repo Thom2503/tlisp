@@ -85,6 +85,8 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 				return eval_cdrcar(ast, env, true);
 			if (strcmp(first->str, "cdr") == 0)
 				return eval_cdrcar(ast, env, false);
+			if (strcmp(first->str, "cons") == 0)
+				return eval_cons(ast, env);
 		}
 		struct Value *fn = eval(first, env);
 		if (fn->type != TYPE_FUNCTION && fn->type != TYPE_SPECIAL && fn->type != TYPE_PAIR) {
@@ -283,4 +285,19 @@ struct Value *eval_cdrcar(struct ASTValue *ast, struct Env *env, bool isCar) {
 		return pair->car;
 	else
 		return pair->cdr;
+}
+
+struct Value *eval_cons(struct ASTValue *ast, struct Env *env) {
+	if (ast->list.count != 3) {
+		fprintf(stderr, "Invalid cons form\n");
+		exit(1);
+	}
+
+	struct Value *first = eval(&ast->list.items[1], env);
+	struct Value *second = eval(&ast->list.items[2], env);
+	struct Value *res = (struct Value *)malloc(sizeof(struct Value));
+	res->type = TYPE_PAIR;
+	res->car = first;
+	res->cdr = second;
+	return res;
 }

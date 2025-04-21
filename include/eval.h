@@ -15,5 +15,6 @@ struct Value *eval_quote(struct ASTValue *ast, struct Env *env);
 struct Value *eval_quote_single(struct ASTValue *ast);
 struct Value *eval_eq(struct ASTValue *ast, struct Env *env);
 struct Value *eval_cdrcar(struct ASTValue *ast, struct Env *env, bool isCar);
+struct Value *eval_cons(struct ASTValue *ast, struct Env *env);
 
 #endif
