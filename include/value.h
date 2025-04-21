@@ -11,6 +11,7 @@ typedef enum {
 	TYPE_SPECIAL,
 	TYPE_BOOLEAN,
 	TYPE_STR,
+	TYPE_NIL,
 } ValueType;
 
 struct Value {

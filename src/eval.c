@@ -48,6 +48,13 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 	case ASTTYPE_SYMBOL: {
 		return env_get(env, ast->str);
 	}
+	case ASTTYPE_DOT_PAIR: {
+		struct Value *val = (struct Value *)malloc(sizeof(struct Value));
+		val->type = TYPE_PAIR;
+		val->car = eval((struct ASTValue *)&ast->pair.car, env);
+		val->cdr = eval((struct ASTValue *)&ast->pair.cdr, env);
+		return val;
+	}
 	case ASTTYPE_LIST: {
 		if (ast->list.count == 0) {
 			struct Value *val = (struct Value *)malloc(sizeof(struct Value));
@@ -63,6 +70,8 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 				return eval_if(ast, env);
 			if (strcmp(first->str, "atom") == 0)
 				return eval_atom(ast, env);
+			if (strcmp(first->str, "quote") == 0)
+				return eval_quote(ast, env);
 		}
 		struct Value *fn = eval(first, env);
 		if (fn->type != TYPE_FUNCTION && fn->type != TYPE_SPECIAL && fn->type != TYPE_PAIR) {
@@ -85,14 +94,18 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 		else
 			return fn->special(args, env);
 	}
-	case ASTTYPE_DOT_PAIR:
 	case ASTTYPE_STR: {
 		struct Value *val = (struct Value *)malloc(sizeof(struct Value));
 		val->type = TYPE_STR;
 		val->str = ast->str;
 		return val;
 	}
-	case ASTTYPE_NIL:
+	case ASTTYPE_NIL: {
+		struct Value *val = (struct Value *)malloc(sizeof(struct Value));
+		val->type = TYPE_NIL;
+		val->symbol = strdup("()");
+		return val;
+	}
 	default:
 		fprintf(stderr, "Unknown node found in evaluation\n");
 		exit(EXIT_FAILURE);
@@ -146,4 +159,44 @@ struct Value *eval_atom(struct ASTValue *ast, struct Env *env) {
 	res->type = TYPE_BOOLEAN;
 	res->_bool = atom->type != TYPE_PAIR;
 	return res;
+}
+
+struct Value *eval_quote(struct ASTValue *ast, struct Env *env) {
+	if (ast->list.count != 2) {
+		fprintf(stderr, "Invalid quote form\n");
+		exit(1);
+	}
+
+	struct ASTValue quoted_val = ast->list.items[1];
+	struct Value *res = (struct Value *)malloc(sizeof(struct Value));
+
+	switch (quoted_val.type) {
+	case ASTTYPE_NUMBER: {
+		res->type = TYPE_NUMBER;
+		res->number = quoted_val.number;
+		break;
+	}
+	case ASTTYPE_SYMBOL: {
+		res->type = TYPE_SYMBOL;
+		res->symbol = quoted_val.str;
+		break;
+	}
+	case ASTTYPE_STR: {
+		res->type = TYPE_STR;
+		res->symbol = quoted_val.str;
+		break;
+	}
+	case ASTTYPE_NIL: {
+		res->type = TYPE_NIL;
+		res->symbol = strdup("()");
+		break;
+	}
+	case ASTTYPE_DOT_PAIR:
+	case ASTTYPE_LIST:
+	default:
+		fprintf(stderr, "Pair and List not implemented\n");
+		exit(1);
+		break;
+	}
+	return res;	
 }
