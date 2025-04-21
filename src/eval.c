@@ -118,12 +118,12 @@ struct Value *eval_if(struct ASTValue *ast, struct Env *env) {
     }
 
     struct Value *cond = eval(&ast->list.items[1], env);
-    if (cond->type != TYPE_NUMBER) {
+    if (cond->type != TYPE_NUMBER && cond->type != TYPE_BOOLEAN) {
         fprintf(stderr, "if: condition must be number\n");
         exit(1);
     }
 
-    if (cond->number != 0.0)
+    if (cond->number != 0.0 || cond->_bool == true)
         return eval(&ast->list.items[2], env);
     else
         return eval(&ast->list.items[3], env);
