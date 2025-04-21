@@ -10,6 +10,7 @@ This is just a project to see if I could implement something (educational purpos
 
 Features
 --------
+- Primitive lisp operations: atom, quote, eq, car, cdr, cons, cond
 - Basic arithmetic: +, -, *, /
 - Math functions: abs, sqrt, floor, ceil, max, min, mod (%)
 - Variable definitions: (define x 10)
@@ -40,6 +41,12 @@ Example session:
     1
     > (mod 10 3)
     1
+	> (quote a)
+	a
+	> (cons (quote a) (quote (b c)))
+	(a b c)
+	> (car (cons (quote a) (quote (b c))))
+	(b c)
 
 Project Structure
 -----------------
