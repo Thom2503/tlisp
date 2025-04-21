@@ -79,6 +79,8 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 				return eval_atom(ast, env);
 			if (strcmp(first->str, "quote") == 0)
 				return eval_quote(ast, env);
+			if (strcmp(first->str, "eq") == 0)
+				return eval_eq(ast, env);
 		}
 		struct Value *fn = eval(first, env);
 		if (fn->type != TYPE_FUNCTION && fn->type != TYPE_SPECIAL && fn->type != TYPE_PAIR) {
@@ -238,4 +240,26 @@ struct Value *eval_quote_single(struct ASTValue *quoted_val) {
 	}
 	return res;	
 
+}
+
+struct Value *eval_eq(struct ASTValue *ast, struct Env *env) {
+	if (ast->list.count != 3) {
+		fprintf(stderr, "Invalid eq form\n");
+		exit(1);
+	}
+
+	struct Value *lhs = eval(&ast->list.items[1], env);
+	struct Value *rhs = eval(&ast->list.items[2], env);
+	struct Value *res = (struct Value *)malloc(sizeof(struct Value));
+	res->type = TYPE_BOOLEAN;
+	res->_bool = false;
+
+	if (lhs->type == TYPE_NUMBER && rhs->type == TYPE_NUMBER)
+		res->_bool = lhs->number == rhs->number;
+	else if ((lhs->type == TYPE_STR && rhs->type == TYPE_STR) || (lhs->type == TYPE_SYMBOL && rhs->type == TYPE_SYMBOL))
+		res->_bool = (strcmp(lhs->str, rhs->str) == 0); 
+	else if (lhs->type == TYPE_NIL && rhs->type == TYPE_NIL)
+		res->_bool = true;
+
+	return res;
 }
