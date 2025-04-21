@@ -14,5 +14,7 @@ struct Value *eval_atom(struct ASTValue *ast, struct Env *env);
 struct Value *eval_quote(struct ASTValue *ast, struct Env *env);
 struct Value *eval_quote_single(struct ASTValue *ast);
 struct Value *eval_eq(struct ASTValue *ast, struct Env *env);
+struct Value *eval_car(struct ASTValue *ast, struct Env *env);
+struct Value *eval_cdr(struct ASTValue *ast, struct Env *env);
 
 #endif
