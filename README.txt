@@ -41,12 +41,12 @@ Example session:
     1
     > (mod 10 3)
     1
-	> (quote a)
-	a
-	> (cons (quote a) (quote (b c)))
-	(a b c)
-	> (car (cons (quote a) (quote (b c))))
-	(b c)
+    > (quote a)
+    a
+    > (cons (quote a) (quote (b c)))
+    (a b c)
+    > (car (cons (quote a) (quote (b c))))
+    (b c)
 
 Project Structure
 -----------------
