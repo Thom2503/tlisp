@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -Wall -Wextra -Iinclude -O2
+CFLAGS := -Wall -Wextra -Iinclude -I/usr/include -O2
 LDFLAGS := -lreadline
 
 SRC_DIR := src
@@ -16,7 +16,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)

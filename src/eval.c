@@ -177,6 +177,7 @@ struct Value *eval_atom(struct ASTValue *ast, struct Env *env) {
 }
 
 struct Value *eval_quote(struct ASTValue *ast, struct Env *env) {
+	(void)env;
 	if (ast->list.count != 2) {
 		fprintf(stderr, "Invalid quote form\n");
 		exit(1);
