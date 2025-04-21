@@ -58,8 +58,15 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 	case ASTTYPE_LIST: {
 		if (ast->list.count == 0) {
 			struct Value *val = (struct Value *)malloc(sizeof(struct Value));
-			val->type = TYPE_SYMBOL;
-			val->symbol = strdup("nil");
+			val->type = TYPE_NIL;
+			val->symbol = strdup("()");
+			return val;
+		}
+		if (ast->type == ASTTYPE_DOT_PAIR) {
+			struct Value *val = (struct Value *)malloc(sizeof(struct Value));
+			val->type = TYPE_PAIR;
+			val->car = eval(ast->pair.car, env);
+			val->cdr = eval(ast->pair.cdr, env);
 			return val;
 		}
 		struct ASTValue *first = &ast->list.items[0];
@@ -191,7 +198,12 @@ struct Value *eval_quote(struct ASTValue *ast, struct Env *env) {
 		res->symbol = strdup("()");
 		break;
 	}
-	case ASTTYPE_DOT_PAIR:
+	case ASTTYPE_DOT_PAIR: {
+		res->type = TYPE_PAIR;
+		res->car = (struct Value *)quoted_val.pair.car;
+		res->cdr = (struct Value *)quoted_val.pair.cdr;
+		break;
+	}
 	case ASTTYPE_LIST:
 	default:
 		fprintf(stderr, "Pair and List not implemented\n");

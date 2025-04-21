@@ -33,8 +33,13 @@ struct ASTValue parseList(struct LispTokens *tokens, size_t *pos) {
 			return (struct ASTValue){.type = ASTTYPE_LIST, .list = {.items = values.values, .count = values.count}};
 		} else if (token.type == TOKEN_TYPE_SYMBOL && strcmp(token.value, ".") == 0) {
 			(*pos)++;
-			struct ASTValue *car = (struct ASTValue*)malloc(sizeof(struct ASTValue));
-			struct ASTValue cdr = parseExpr(tokens, pos);
+			if (values.count != 1) {
+				parseError("Invalid dotted pair, must have exactly one item before dot");
+			}
+			struct ASTValue *car = &values.values[0];
+			struct ASTValue cdr_val = parseExpr(tokens, pos);
+			struct ASTValue *cdr = (struct ASTValue *)malloc(sizeof(struct ASTValue));
+			*cdr = cdr_val;
 			parseExpect(tokens, pos, TOKEN_TYPE_PAREN_RIGHT);
 			if (values.count == 1) {
 				car = &values.values[0]; 
@@ -42,7 +47,7 @@ struct ASTValue parseList(struct LispTokens *tokens, size_t *pos) {
 				parseError("Invalid dotted pair");
 			}
 			if (car == NULL) parseError("Car is invalid");
-			return (struct ASTValue){.type = ASTTYPE_DOT_PAIR, .pair = {.car = car, .cdr = &cdr}};
+			return (struct ASTValue){.type = ASTTYPE_DOT_PAIR, .pair = {.car = car, .cdr = cdr}};
 		} else {
 			if (values.count >= values.capacity) {
 				values.capacity *= 2;
