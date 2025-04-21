@@ -174,23 +174,27 @@ struct Value *eval_quote(struct ASTValue *ast, struct Env *env) {
 		exit(1);
 	}
 
-	struct ASTValue quoted_val = ast->list.items[1];
+	struct ASTValue *quoted_val = &ast->list.items[1];
+	return eval_quote_single(quoted_val);
+}
+
+struct Value *eval_quote_single(struct ASTValue *quoted_val) {
 	struct Value *res = (struct Value *)malloc(sizeof(struct Value));
 
-	switch (quoted_val.type) {
+	switch (quoted_val->type) {
 	case ASTTYPE_NUMBER: {
 		res->type = TYPE_NUMBER;
-		res->number = quoted_val.number;
+		res->number = quoted_val->number;
 		break;
 	}
 	case ASTTYPE_SYMBOL: {
 		res->type = TYPE_SYMBOL;
-		res->symbol = quoted_val.str;
+		res->symbol = quoted_val->str;
 		break;
 	}
 	case ASTTYPE_STR: {
 		res->type = TYPE_STR;
-		res->symbol = quoted_val.str;
+		res->symbol = quoted_val->str;
 		break;
 	}
 	case ASTTYPE_NIL: {
@@ -200,15 +204,38 @@ struct Value *eval_quote(struct ASTValue *ast, struct Env *env) {
 	}
 	case ASTTYPE_DOT_PAIR: {
 		res->type = TYPE_PAIR;
-		res->car = (struct Value *)quoted_val.pair.car;
-		res->cdr = (struct Value *)quoted_val.pair.cdr;
+		res->car = eval_quote_single(quoted_val->pair.car);
+		res->cdr = eval_quote_single(quoted_val->pair.cdr);
 		break;
 	}
-	case ASTTYPE_LIST:
-	default:
-		fprintf(stderr, "Pair and List not implemented\n");
-		exit(1);
+	case ASTTYPE_LIST: {
+		struct Value *head = NULL;
+		struct Value **tail = &head;
+
+		for (size_t i = 0; i < quoted_val->list.count; i++) {
+			struct Value *item = eval_quote_single(&quoted_val->list.items[i]);
+			struct Value *pair = (struct Value *)malloc(sizeof(struct Value));
+
+			pair->type = TYPE_PAIR;
+			pair->car = item;
+			pair->cdr = NULL;
+			*tail = pair;
+			tail = &pair->cdr;
+		}
+
+		if (head == NULL) {
+			head = (struct Value *)malloc(sizeof(struct Value));
+			head->type = TYPE_NIL;
+			head->symbol = strdup("()");
+		}
+
+		res = head;
 		break;
+	}
+	default:
+		fprintf(stderr, "Not a valid type to evaluate\n");
+		exit(1);
 	}
 	return res;	
+
 }
