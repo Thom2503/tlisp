@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -Wall -Wextra -Iinclude -I/usr/include -O2
+CFLAGS := -Wall -Wextra -Iinclude -O2
 LDFLAGS := -lreadline -lm
 
 SRC_DIR := src
@@ -9,14 +9,13 @@ BIN_DIR := bin
 TARGET := $(BIN_DIR)/tlisp
 
 SRCS := $(wildcard $(SRC_DIR)/*.c)
-
 OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(TARGET)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
