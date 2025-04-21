@@ -1,6 +1,6 @@
 CC := gcc
 CFLAGS := -Wall -Wextra -Iinclude -I/usr/include -O2
-LDFLAGS := -lreadline
+LDFLAGS := -lreadline -lm
 
 SRC_DIR := src
 OBJ_DIR := build
