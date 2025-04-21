@@ -82,9 +82,9 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 			if (strcmp(first->str, "eq") == 0)
 				return eval_eq(ast, env);
 			if (strcmp(first->str, "car") == 0)
-				return eval_car(ast, env);
+				return eval_cdrcar(ast, env, true);
 			if (strcmp(first->str, "cdr") == 0)
-				return eval_cdr(ast, env);
+				return eval_cdrcar(ast, env, false);
 		}
 		struct Value *fn = eval(first, env);
 		if (fn->type != TYPE_FUNCTION && fn->type != TYPE_SPECIAL && fn->type != TYPE_PAIR) {
@@ -268,7 +268,7 @@ struct Value *eval_eq(struct ASTValue *ast, struct Env *env) {
 	return res;
 }
 
-struct Value *eval_car(struct ASTValue *ast, struct Env *env) {
+struct Value *eval_cdrcar(struct ASTValue *ast, struct Env *env, bool isCar) {
 	if (ast->list.count != 2) {
 		fprintf(stderr, "Invalid car form\n");
 		exit(1);
@@ -279,19 +279,8 @@ struct Value *eval_car(struct ASTValue *ast, struct Env *env) {
 		fprintf(stderr, "Expected list or pair\n");
 		exit(1);
 	}
-	return pair->car;
-}
-
-struct Value *eval_cdr(struct ASTValue *ast, struct Env *env) {
-	if (ast->list.count != 2) {
-		fprintf(stderr, "Invalid car form\n");
-		exit(1);
-	}
-
-	struct Value *pair = eval(&ast->list.items[1], env);
-	if (pair->type != TYPE_PAIR) {
-		fprintf(stderr, "Expected list or pair\n");
-		exit(1);
-	}
-	return pair->cdr;
+	if (isCar)
+		return pair->car;
+	else
+		return pair->cdr;
 }
