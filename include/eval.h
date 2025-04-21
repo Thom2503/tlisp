@@ -10,5 +10,6 @@ struct Value *eval_list(struct ASTValueArray *list, size_t start, struct Env *en
 struct Value *eval(struct ASTValue *ast, struct Env *env);
 struct Value *eval_define(struct ASTValue *ast, struct Env *env);
 struct Value *eval_if(struct ASTValue *ast, struct Env *env);
+struct Value *eval_atom(struct ASTValue *ast, struct Env *env);
 
 #endif

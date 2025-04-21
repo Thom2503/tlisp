@@ -61,9 +61,11 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 				return eval_define(ast, env);
 			if (strcmp(first->str, "if") == 0)
 				return eval_if(ast, env);
+			if (strcmp(first->str, "atom") == 0)
+				return eval_atom(ast, env);
 		}
 		struct Value *fn = eval(first, env);
-		if (fn->type != TYPE_FUNCTION && fn->type != TYPE_SPECIAL) {
+		if (fn->type != TYPE_FUNCTION && fn->type != TYPE_SPECIAL && fn->type != TYPE_PAIR) {
 			fprintf(stderr, "First element is not a function\n");
 			exit(EXIT_FAILURE);
 		}
@@ -84,7 +86,12 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 			return fn->special(args, env);
 	}
 	case ASTTYPE_DOT_PAIR:
-	case ASTTYPE_STR:
+	case ASTTYPE_STR: {
+		struct Value *val = (struct Value *)malloc(sizeof(struct Value));
+		val->type = TYPE_STR;
+		val->str = ast->str;
+		return val;
+	}
 	case ASTTYPE_NIL:
 	default:
 		fprintf(stderr, "Unknown node found in evaluation\n");
@@ -127,4 +134,16 @@ struct Value *eval_if(struct ASTValue *ast, struct Env *env) {
         return eval(&ast->list.items[2], env);
     else
         return eval(&ast->list.items[3], env);
+}
+
+struct Value *eval_atom(struct ASTValue *ast, struct Env *env) {
+	if (ast->list.count != 2 && ast->list.count == 0) {
+		fprintf(stderr, "Invalid atom form\n");
+		exit(1);
+	}
+	struct Value *atom = eval(&ast->list.items[1], env);
+	struct Value *res = (struct Value *)malloc(sizeof(struct Value));
+	res->type = TYPE_BOOLEAN;
+	res->_bool = atom->type != TYPE_PAIR;
+	return res;
 }

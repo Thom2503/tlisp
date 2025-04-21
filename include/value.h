@@ -10,6 +10,7 @@ typedef enum {
 	TYPE_FUNCTION,
 	TYPE_SPECIAL,
 	TYPE_BOOLEAN,
+	TYPE_STR,
 } ValueType;
 
 struct Value {
@@ -17,6 +18,7 @@ struct Value {
 	union {
 		double number;
 		char *symbol;
+		char *str;
 		bool _bool;
 		struct {
 			struct Value *car;
