@@ -87,6 +87,8 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 				return eval_cdrcar(ast, env, false);
 			if (strcmp(first->str, "cons") == 0)
 				return eval_cons(ast, env);
+			if (strcmp(first->str, "cond") == 0)
+				return eval_cond(ast, env);
 		}
 		struct Value *fn = eval(first, env);
 		if (fn->type != TYPE_FUNCTION && fn->type != TYPE_SPECIAL && fn->type != TYPE_PAIR) {
@@ -301,4 +303,29 @@ struct Value *eval_cons(struct ASTValue *ast, struct Env *env) {
 	res->car = first;
 	res->cdr = second;
 	return res;
+}
+
+struct Value *eval_cond(struct ASTValue *ast, struct Env *env) {
+	for (size_t i = 1; i < ast->list.count; i++) {
+		struct ASTValue item = ast->list.items[i];
+		if (item.type != ASTTYPE_LIST || item.list.count != 2) {
+			fprintf(stderr, "Invalid cond clause it should have 2 elements\n");
+			exit(1);
+		}
+
+		struct ASTValue test_val = item.list.items[0];
+		struct ASTValue res_val = item.list.items[1];
+
+		if (test_val.type == ASTTYPE_SYMBOL && strcmp(test_val.str, "else") == 0) {
+			return eval(&res_val, env);
+		}
+
+		struct Value *test_eval = eval(&test_val, env);
+		if ((test_eval->type == TYPE_NUMBER && test_eval->number != 0.0) ||
+			(test_eval->type == TYPE_BOOLEAN && test_eval->_bool == true)) {
+			return eval(&res_val, env);
+		}
+	}
+	fprintf(stderr, "No matching cond form\n");
+	exit(1);
 }
