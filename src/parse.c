@@ -76,10 +76,10 @@ struct ASTValue parseExpr(struct LispTokens *tokens, size_t *pos) {
 		return (struct ASTValue){.type = ASTTYPE_NUMBER, .number = strtod(token.value, &end)};
 	case TOKEN_TYPE_SYMBOL:
 		(*pos)++;
-		return (struct ASTValue){.type = ASTTYPE_SYMBOL, .str = token.value};
+		return (struct ASTValue){.type = ASTTYPE_SYMBOL, .str = strdup(token.value)};
 	case TOKEN_TYPE_STR:
 		(*pos)++;
-		return (struct ASTValue){.type = ASTTYPE_STR, .str = token.value};
+		return (struct ASTValue){.type = ASTTYPE_STR, .str = strdup(token.value)};
 	case TOKEN_TYPE_PAREN_RIGHT:
 		parseError("Unexpected ')'");
 		break;

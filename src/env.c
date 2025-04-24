@@ -313,12 +313,10 @@ void env_set(struct Env *env, const char *name, struct Value *value) {
 }
 
 struct Value *env_get(struct Env *env, const char *name) {
-	void *value;
-	struct Env *current = env;
-	while (current) {
-		value = table_get(env->bindings, name);
+	while (env) {
+		void *value = table_get(env->bindings, name);
 		if (value) return (struct Value *)value;
-		current = current->parent;
+		env = env->parent;
 	}
 	fprintf(stderr, "Unbound variable: %s\n", name);
 	exit(EXIT_FAILURE);
