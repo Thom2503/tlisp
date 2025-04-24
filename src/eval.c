@@ -383,3 +383,25 @@ struct Value *call_lambda(struct Value *closure, struct Value *args, struct Env 
 
 	return eval(closure->body, child);
 }
+
+void freeValue(struct Value *val) {
+    if (!val) return;
+    switch (val->type) {
+        case TYPE_SYMBOL:
+            free(val->symbol);
+            break;
+        case TYPE_PAIR:
+            freeValue(val->car);
+            freeValue(val->cdr);
+            free(val->car);
+            free(val->cdr);
+            break;
+        case TYPE_FUNCTION:
+        case TYPE_SPECIAL:
+            break;
+        default:
+            break;
+    }
+    free(val);
+}
+

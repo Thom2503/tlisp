@@ -88,6 +88,7 @@ int main(int argc, char **argv) {
 			struct Value *result = eval(&ast, env);
 			print_value(result);
 			freeAST(&ast);
+			freeValue(result);
 		}
 		freeTokens(&tokens);
 		free(buffer);
@@ -110,6 +111,7 @@ int main(int argc, char **argv) {
 				struct Value *result = eval(&ast, env);
 				print_value(result);
 				freeTokens(&tokens);
+				freeValue(result);
 				freeAST(&ast);
 			}
 		}

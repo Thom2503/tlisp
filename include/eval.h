@@ -20,5 +20,6 @@ struct Value *eval_cond(struct ASTValue *ast, struct Env *env);
 struct Value *eval_lambda(struct ASTValue *ast, struct Env *env);
 struct Value *eval_label(struct ASTValue *ast, struct Env *env);
 struct Value *call_lambda(struct Value *closure, struct Value *args, struct Env *env);
+void freeValue(struct Value *val);
 
 #endif
