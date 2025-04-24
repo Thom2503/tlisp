@@ -3,7 +3,7 @@
 
 struct Value *make_builtin_function(struct Value *(*func)(struct Value *, struct Env *)) {
 	struct Value *val = (struct Value *)malloc(sizeof(struct Value));
-	val->type = TYPE_FUNCTION;
+	val->type = TYPE_BUILTIN;
 	val->builtin = func;
 	return val;
 }

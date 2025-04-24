@@ -95,7 +95,7 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 				return eval_label(ast, env);
 		}
 		struct Value *fn = eval(first, env);
-		if (fn->type != TYPE_FUNCTION && fn->type != TYPE_SPECIAL && fn->type != TYPE_PAIR) {
+		if (fn->type != TYPE_FUNCTION && fn->type != TYPE_SPECIAL && fn->type != TYPE_PAIR && fn->type != TYPE_BUILTIN) {
 			fprintf(stderr, "First element is not a function\n");
 			exit(EXIT_FAILURE);
 		}
@@ -110,8 +110,10 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 			*arg_tail = pair;
 			arg_tail = &pair->cdr;
 		}
-		if(fn->type == TYPE_FUNCTION)
+		if(fn->type == TYPE_BUILTIN)
 			return fn->builtin(args, env);
+		else if (fn->type == TYPE_FUNCTION)
+			return call_lambda(fn, args, env);
 		else
 			return fn->special(args, env);
 	}
@@ -366,4 +368,18 @@ struct Value *eval_label(struct ASTValue *ast, struct Env *env) {
 		fprintf(stderr, "Label expects name and lambda\n");
 		exit(1);
 	}
+}
+
+struct Value *call_lambda(struct Value *closure, struct Value *args, struct Env *env) {
+	(void)env;
+	struct Env *child = create_child_env(closure->closure_env);
+
+	for (size_t i = 0; i < closure->params->list.count; i++) {
+		struct ASTValue param = closure->params->list.items[i];
+		struct Value *arg = args->car;
+		env_set(child, param.str, arg);
+		arg = arg->cdr;
+	}
+
+	return eval(closure->body, child);
 }
