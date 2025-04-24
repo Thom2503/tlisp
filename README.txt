@@ -6,11 +6,14 @@ Overview
 tlisp is a small Lisp interpreter written in C. It supports basic arithmetic operations,
 variable definitions, conditionals, and built-in math functions.
 
-This is just a project to see if I could implement something (educational purposes).
+This is just a project to see if I could implement something (educational
+purposes). It also probably contains some amount of bugs and other issues, but
+then again I hacked this together in a short amount of time.
 
 Features
 --------
 - Primitive lisp operations: atom, quote, eq, car, cdr, cons, cond
+- Make functions with lambda and label
 - Basic arithmetic: +, -, *, /
 - Math functions: abs, sqrt, floor, ceil, max, min, mod (%)
 - Variable definitions: (define x 10)
@@ -53,10 +56,13 @@ Project Structure
 - `src/` — Source code files
 - `include/` — Header files
 - `bin/` — Compiled binary
+- `test/` - Test .lisp files
 - `Makefile` — Build instructions
 
 Notes
 -----
-- Only numerical types are currently supported.
 - Division by zero will result in an error and exit the program.
 - All symbols are stored in an environment hash table with support for lexical scoping.
+- (quote #t) doesn't work in (cond ...) but you can use else.
+- Symbols are strings, make of that what you will.
+- Can interpret in a REPL or a file
