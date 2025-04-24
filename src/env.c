@@ -313,8 +313,9 @@ void env_set(struct Env *env, const char *name, struct Value *value) {
 }
 
 struct Value *env_get(struct Env *env, const char *name) {
+	void *value;
 	while (env) {
-		void *value = table_get(env->bindings, name);
+		value = table_get(env->bindings, name);
 		if (value) return (struct Value *)value;
 		env = env->parent;
 	}
@@ -353,4 +354,11 @@ struct Env *create_child_env(struct Env *p) {
 	child_env->parent = p;
 	child_env->bindings = table_create();
 	return child_env;
+}
+
+void freeEnv(struct Env *env) {
+	if (!env) return;
+	table_destroy(env->bindings);
+	freeEnv(env->parent);
+	free(env);
 }

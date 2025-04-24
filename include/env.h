@@ -21,5 +21,6 @@ struct Value *env_get(struct Env *env, const char *key);
 struct Value *make_builtin_function(struct Value *(*fn)(struct Value *, struct Env *));
 struct Value *builtin_add(struct Value *args, struct Env *env);
 struct Value *builtin_prod(struct Value *args, struct Env *env);
+void freeEnv(struct Env *env);
 
 #endif

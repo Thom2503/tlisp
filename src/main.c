@@ -87,10 +87,12 @@ int main(int argc, char **argv) {
 			struct ASTValue ast = parseExpr(&tokens, &pos);
 			struct Value *result = eval(&ast, env);
 			print_value(result);
-			freeAST(&ast);
-			freeValue(result);
+			// idk this breaks it idk why?
+			/* freeAST(&ast); */
+			/* freeValue(result); */
 		}
 		freeTokens(&tokens);
+		freeEnv(env);
 		free(buffer);
 		return EXIT_SUCCESS;
 	} else {
@@ -111,10 +113,12 @@ int main(int argc, char **argv) {
 				struct Value *result = eval(&ast, env);
 				print_value(result);
 				freeTokens(&tokens);
-				freeValue(result);
-				freeAST(&ast);
+				// idk this breaks it idk why?
+				/* freeValue(result); */
+				/* freeAST(&ast); */
 			}
 		}
 	}
+	freeEnv(env);
 	return EXIT_SUCCESS;
 }
