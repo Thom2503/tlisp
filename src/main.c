@@ -48,6 +48,9 @@ void print_value(struct Value *val) {
 	case TYPE_BOOLEAN:
 		printf("%s\n", val->_bool == true ? "#t" : "#f");
 		break;
+	case TYPE_NIL:
+		printf("()\n");
+		break;
     default:
         printf("<unknown>\n");
         break;
