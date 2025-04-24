@@ -24,7 +24,6 @@ int list_length(struct Value *list) {
 	return len;
 }
 
-
 struct Value *builtin_add(struct Value *args, struct Env *env) {
 	struct Value *val = (struct Value *)malloc(sizeof(struct Value));
 	val->type = TYPE_NUMBER;
@@ -347,4 +346,13 @@ struct Env *init_global_env(void) {
 	env_set(env, "#t", make_builtin_boolean(true));
 	env_set(env, "#f", make_builtin_boolean(false));
 	return env;
+}
+
+struct Env *create_child_env(struct Env *p) {
+	struct Env *child_env = (struct Env *)malloc(sizeof(struct Env));
+	if (child_env == NULL)
+		return NULL;
+	child_env->parent = p;
+	child_env->bindings = table_create();
+	return child_env;
 }

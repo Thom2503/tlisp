@@ -17,5 +17,6 @@ struct Value *eval_eq(struct ASTValue *ast, struct Env *env);
 struct Value *eval_cdrcar(struct ASTValue *ast, struct Env *env, bool isCar);
 struct Value *eval_cons(struct ASTValue *ast, struct Env *env);
 struct Value *eval_cond(struct ASTValue *ast, struct Env *env);
+struct Value *eval_lambda(struct ASTValue *ast, struct Env *env);
 
 #endif

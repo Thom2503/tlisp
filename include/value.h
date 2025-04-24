@@ -2,6 +2,7 @@
 #define VALUE_H
 
 struct Env;
+struct ASTValue;
 
 typedef enum {
 	TYPE_NUMBER,
@@ -27,6 +28,11 @@ struct Value {
 		}; // pair, eg list
 		struct Value *(*builtin)(struct Value *args, struct Env *);
 		struct Value *(*special)(struct Value *args, struct Env *);
+		struct {
+			struct ASTValue *params;
+			struct ASTValue *body;
+			struct Env *closure_env;
+		};
 	};
 };
 

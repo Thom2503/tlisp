@@ -89,6 +89,8 @@ struct Value *eval(struct ASTValue *ast, struct Env *env) {
 				return eval_cons(ast, env);
 			if (strcmp(first->str, "cond") == 0)
 				return eval_cond(ast, env);
+			if (strcmp(first->str, "lambda") == 0)
+				return eval_lambda(ast, env);
 		}
 		struct Value *fn = eval(first, env);
 		if (fn->type != TYPE_FUNCTION && fn->type != TYPE_SPECIAL && fn->type != TYPE_PAIR) {
@@ -328,4 +330,22 @@ struct Value *eval_cond(struct ASTValue *ast, struct Env *env) {
 	}
 	fprintf(stderr, "No matching cond form\n");
 	exit(1);
+}
+
+struct Value *eval_lambda(struct ASTValue *ast, struct Env *env) {
+	if (ast->list.count != 4) {
+		struct ASTValue *params = &ast->list.items[1];
+		struct ASTValue *body = &ast->list.items[2];
+
+		struct Value *closure = (struct Value *)malloc(sizeof(struct Value));
+		closure->type = TYPE_FUNCTION;
+		closure->params = params;
+		closure->body = body;
+		closure->closure_env = create_child_env(env);
+
+		return closure;
+	} else {
+		fprintf(stderr, "Lambda expects a body and params\n");
+		exit(1);
+	}
 }
