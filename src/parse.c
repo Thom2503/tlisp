@@ -96,3 +96,28 @@ struct ASTValue parse(struct LispTokens *tokens) {
 	size_t pos = 0;
 	return parseExpr(tokens, &pos);
 }
+
+void freeAST(struct ASTValue *ast) {
+    switch (ast->type) {
+        case ASTTYPE_NUMBER:
+            break;
+        case ASTTYPE_SYMBOL:
+        case ASTTYPE_STR:
+            free(ast->str);
+            break;
+        case ASTTYPE_LIST:
+            for (size_t i = 0; i < ast->list.count; i++) {
+                freeAST(&ast->list.items[i]);
+            }
+            free(ast->list.items);
+            break;
+        case ASTTYPE_DOT_PAIR:
+            freeAST(ast->pair.car);
+            freeAST(ast->pair.cdr);
+            free(ast->pair.car);
+            free(ast->pair.cdr);
+            break;
+        case ASTTYPE_NIL:
+            break;
+    }
+}

@@ -42,5 +42,6 @@ void parseExpect(struct LispTokens *tokens, size_t *pos, LispTokenType type);
 struct ASTValue parseList(struct LispTokens *tokens, size_t *pos);
 struct ASTValue parseExpr(struct LispTokens *tokens, size_t *pos);
 struct ASTValue parse(struct LispTokens *tokens);
+void freeAST(struct ASTValue *ast);
 
 #endif

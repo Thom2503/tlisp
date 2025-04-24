@@ -87,6 +87,7 @@ int main(int argc, char **argv) {
 			struct ASTValue ast = parseExpr(&tokens, &pos);
 			struct Value *result = eval(&ast, env);
 			print_value(result);
+			freeAST(&ast);
 		}
 		freeTokens(&tokens);
 		free(buffer);
@@ -109,6 +110,7 @@ int main(int argc, char **argv) {
 				struct Value *result = eval(&ast, env);
 				print_value(result);
 				freeTokens(&tokens);
+				freeAST(&ast);
 			}
 		}
 	}
